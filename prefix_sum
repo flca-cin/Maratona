@@ -1,0 +1,7 @@
+//psum[i] = soma dos elementos de 0 a i-1 do vetor.
+vi v;
+vector<ll> psum(N+1,0);
+for(int i=0; i<N; i++){
+  psum[i+1] = psum[i] +v[i];
+
+}
