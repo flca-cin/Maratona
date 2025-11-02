@@ -11,8 +11,7 @@ int main(){
     using ll = long long;
     using pii = pair<int,int>;
     using vi = vector<int>;
-    ios::sync_with_stdio(false);
-    cin.tie(0);
+    ios::sync_with_stdio(false); cin.tie(0);
 
     return 0;
 }
