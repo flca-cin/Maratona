@@ -19,3 +19,187 @@ void backtrack(/*estado atual*/){
         }
     }
 }
+
+
+//BACKTRACK DO SUDOKU:
+
+bool repetido(vector<string> tabuleiro, int i, int j, char c){
+    for(int k=0;k<9;k++){
+        if(tabuleiro[i][k] == c){
+            return true;
+        }
+        if(tabuleiro[k][j] == c){
+            return true;
+        }
+        if(tabuleiro[3*(i/3)+ k/3][3*(j/3)+ (k%3)] == c){
+            return true;
+        }
+    }
+    return false;
+}
+
+pair<bool,vector<string>> sudoku_pronto(vector<string> &tabuleiro, int i,int j){
+    if(i==9){
+        return {true,tabuleiro};
+    }
+    if(j==9){
+        return sudoku_pronto(tabuleiro, i+1,0);
+    }
+
+    if(tabuleiro[i][j] != '0'){
+        return sudoku_pronto(tabuleiro,i,j+1);
+    }
+    else{
+        //cout<<"ENTREI";
+        for(char c = '1'; c <= '9'; c++){
+            //cout<<"AQUI!";
+            if(!repetido(tabuleiro,i,j,c)){
+                tabuleiro[i][j] = c;
+                /*for(int h=0;h<9;h++){
+                    for(int g=0;g<9;g++){
+                        cout<<tabuleiro[h][g]<<" ";
+                    }
+                    cout<<endl;
+                }
+                cout<<endl<<endl;*/
+                par = sudoku_pronto(tabuleiro,i,j+1);
+                if(par.first){
+                    return par;
+                }
+                else{
+                    tabuleiro[i][j]='0';
+                }    
+            }
+        }
+    }
+    return {false,oi};
+}
+
+
+
+
+
+//BACKTRACK DOS BISPOS INTELIGENTE:
+
+int n, k;
+ll total;
+vector<int> diag1, diag2;
+
+void backtrack(int pos, int bishops_colocados) {
+    if (bishops_colocados == k) {
+        total++;
+        return;
+    }
+    if (pos >= n * n) return;
+
+    int i = pos / n;
+    int j = pos % n;
+
+    // tenta colocar um bispo aqui, se possível
+    if (!diag1[i - j + (n - 1)] && !diag2[i + j]) {
+        diag1[i - j + (n - 1)] = diag2[i + j] = 1;
+        backtrack(pos + 1, bishops_colocados + 1);
+        diag1[i - j + (n - 1)] = diag2[i + j] = 0;
+    }
+
+    // tenta não colocar bispo aqui
+    backtrack(pos + 1, bishops_colocados);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    while (true) {
+        cin >> n >> k;
+        if (n == 0 && k == 0) break;
+
+        total = 0;
+        diag1.assign(2 * n, 0);
+        diag2.assign(2 * n, 0);
+
+        backtrack(0, 0);
+        cout << total << "\n";
+    }
+
+    return 0;
+}
+
+
+
+
+//BACKTRACK DOS BISPOS BURRO:
+bool e_valida(vector<vi> &tabuleiro,int i, int j, int n){
+    int linha=i,coluna=j;
+    while(linha>=0 && coluna>=0){
+        if(tabuleiro[linha][coluna]==1){
+            //cout<<"ta vendo";
+            return false;
+        }
+        linha--;
+        coluna--;
+    }
+    linha = i;coluna = j;
+    while(linha<n && coluna<n){
+        if(tabuleiro[linha][coluna]==1){
+            //cout<<"ta vendo";
+            return false;
+        }
+        linha++;
+        coluna++;
+    }
+    linha = i;coluna = j;
+    while(linha<n && coluna>=0){
+        if(tabuleiro[linha][coluna]==1){
+            //cout<<"ta vendo";
+            return false;
+        }
+        linha++;
+        coluna--;
+    }
+    linha = i;coluna = j;
+    while(linha>=0 && coluna<n){
+        if(tabuleiro[linha][coluna]==1){
+            //cout<<"ta vendo";
+            return false;
+        }
+        linha--;
+        coluna++;
+    }
+    return true;
+}
+
+
+bool backtrack(vector<vi> &tabuleiro, int i,int j, int qtd_bispos,  int k, int n, ll *soma_atual){
+    //1. Caso base : É uma solução completa e válida?
+    if(qtd_bispos==k){
+        (*soma_atual)++;
+        //cout<<"entrou"<<endl;
+        return true;
+    }
+    if(i==n){
+        return false;
+    }
+    if(j==n){
+        return backtrack(tabuleiro,i+1,0,qtd_bispos,k,n,soma_atual);
+    }
+    if(tabuleiro[i][j]==0){
+        if(e_valida(tabuleiro,i,j,n)){
+            //4. Fazer: aplicar Transição
+            tabuleiro[i][j]=1;
+
+            //5. avançar pra a próxima
+            backtrack(tabuleiro,i,j+1,qtd_bispos+1,k,n,soma_atual);
+            //6.DESFAZER
+            
+            tabuleiro[i][j]=0;
+              
+        }
+    }
+    
+
+    return backtrack(tabuleiro,i,j+1,qtd_bispos,k,n,soma_atual);
+    
+}
+
+
