@@ -1,0 +1,21 @@
+void backtrack(/*estado atual*/){
+    //1. Caso base : É uma solução completa e válida?
+    if(e_solucao_completa(estado_atual)){
+        return armazenar_solucao(estado_atual);
+    }
+    //2. Iterar sobre todas as próximas escolhas (Transições)
+    for(cada_proxima_escolha){
+
+        //3. Poda: a escolha é válida?
+        if(e_valida(proxima_escolha)){
+            //4. Fazer: aplicar Transição
+            aplicar_escola(proxima_escolha);
+
+            //5. avançar pra a próxima
+            backtrack(/*proxima escolha*/);
+
+            //6.DESFAZER
+            desfaz_escolha(proxima_escolha);
+        }
+    }
+}
