@@ -1,17 +1,23 @@
 //GRAFOS SEM PESOS
+//COMENTARIOS: GRAFO SIMPLES
 const int MAXSZ = 1e3+5;
 bool g[MAXSZ][MAXSZ];
 
 void addEdge(int u, int v){
     g[u][v]=true;
+    //g[v][u]=true;
 }
 
 void removeEdge(int u, int v){
     g[u][v]=false;
+    //g[v][u]=false;
 }
 
-//GRAFO COM PESOS (DISTANCIAS)
 
+
+
+//GRAFO COM PESOS (DISTANCIAS)
+//COMENTARIOS: GRAFO SIMPLES
 
 const int MAXSZ = 1e3+5;
 const int INF = 2e9;
@@ -27,10 +33,13 @@ void init(int n){
 }
 
 void addEdge (int u, int v, int w){
-    g[u][u] = w;
+    g[u][v] = w;
+    //g[v][u] = w;
 }
 
 void removeEdge (int u, int v){
     g[u][v] = INF;
+    //g[v][u] = INF;
+
 }
 
