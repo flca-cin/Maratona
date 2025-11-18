@@ -1,0 +1,25 @@
+//SEM PESOS
+//COMENTÁRIOS: para grafos simples
+
+const int MAXSZ = 1e3 + 5;
+int n,m;
+
+vi adj[MAXSZ];
+
+void addEdge(int u, int v){
+    adj[u].push_back(v);
+    //adj[v].push_back(u);
+}
+
+//COM PESOS
+//COMENTÁRIOS: para grafos simples
+const int MAXSZ = 1e3 + 5;
+int n,m;
+
+vector<pii> adj[MAXSZ];
+
+void addEdge(int u, int v, int w){
+    adj[u].push_back({v,w});
+    //adj[v].push_back({u,w});
+}
+
