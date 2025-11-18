@@ -1,0 +1,6 @@
+vi v;
+sort(v.begin(),v.end());
+
+do{
+    //fazer o que tiver na permutação atual
+} while(next_permutation(v.begin(),v.end()));
