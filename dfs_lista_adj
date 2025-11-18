@@ -1,0 +1,11 @@
+//DFS NA LISTA DE ADJASCENCIA
+
+vi adj[MAXN];
+bool vis[MAXN]; //INICIA EM FALSO
+
+void dfs(int u){
+    vis[u] = true;
+    for(int v:adj[u]){
+        if(!vis[v]) dfs[v];
+    }
+}
