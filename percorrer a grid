@@ -1,0 +1,19 @@
+//supondo vazio = '#'
+const int MAXSZ = 1e3+5;
+int grid[MAXSZ][MAXSZ];
+
+const int dx[] = {1,0,0,-1};
+const int dy[] = {0,1,-1,0};
+
+bool valid(int x, int y,int tam){
+    return x>=0 && x<tam && y>=0 && y<tam && grid[x][y] != '#';
+}
+
+void rec(int x, int y,int tam){
+    grid[x][y] = '#';
+    for(int d=0;d<4;d++){
+        int ax = x+dx[d], ay = y+dy[d];
+        if(!valid(ax,ay,tam)) continue;
+        rec(ax,ay,tam);
+    }
+}
