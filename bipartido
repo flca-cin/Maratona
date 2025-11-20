@@ -1,0 +1,14 @@
+vector<vi> adj;
+vector<bool> vis,color;
+
+bool dfs(int v){
+    vis[v] = true;
+    for(int u: adj[v]){
+        if(!vis[u]){
+            color[u] = !color[v];
+            if(!dfs(u)) return false;
+        }
+        else if(color[v] == color[u]) return false;
+    }
+    return true;
+}
