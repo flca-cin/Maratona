@@ -1,0 +1,85 @@
+
+int dist[MAXSZ];
+
+int bfs(int b){
+    int max_dist = 0;
+    int vtx_longe = -1;
+    memset(dist,-1,(n+7)*sizeof(int));
+    dist[b] = 0;
+    queue<int> q;
+    q.push(b);
+    while(!q.empty()){
+        int u = q.front();q.pop();
+        for(int v : adj[u]){
+            if(dist[v]==-1){
+                dist[v]=dist[u]+1;
+                if(dist[v]>max_dist){
+                    max_dist = dist[v];
+                    vtx_longe = v;
+                }
+                q.push(v);
+            }
+        }
+    }
+    return vtx_longe;
+}
+
+
+
+int distA[MAXSZ];
+
+int bfsA(int b){
+    int max_dist = 0;
+    int vtx_longe = -1;
+    memset(distA,-1,(n+7)*sizeof(int));
+    distA[b] = 0;
+    queue<int> q;
+    q.push(b);
+    while(!q.empty()){
+        int u = q.front();q.pop();
+        for(int v : adj[u]){
+            if(distA[v]==-1){
+                distA[v]=distA[u]+1;
+                if(distA[v]>max_dist){
+                    max_dist = distA[v];
+                    vtx_longe = v;
+                }
+                q.push(v);
+            }
+        }
+    }
+    return vtx_longe;
+}
+
+
+int main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    cin>> n;
+    for(int i=0;i<n-1;i++){
+        int a,b;
+        cin>>a>>b;
+        addEdge(a,b);
+    }
+
+    int A = bfs(1);
+    int B = bfsA(A);
+    bfs(B);
+    if(n>1){
+        for(int i=1;i<=n;i++){
+            if(i==A || i==B){
+                cout<<distA[B]<<" ";
+            }
+            else{
+                cout<<max(dist[i],distA[i])<<" ";
+            }
+        }
+    }
+    else{
+        cout<<0;
+    }
+    
+    return 0;
+}
