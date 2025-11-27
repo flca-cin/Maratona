@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll INF = LLONG_MAX;
+const int K = 10;
+
+int main() {
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    int n, m;
+    cin >> n >> m;
+    // n = cidades, m = voos
+
+
+    vector<vector<pair<int,ll>>> adj(n + 1);
+
+    for (int i = 0; i < m; ++i) {
+        int a, b;
+        ll w;
+        cin >> a >> b >> w;
+        adj[a].push_back({b, w}); // grafo direcionado
+    }
+
+    // dist[v][c] = menor custo pra chegar em v usando exatamente c cupons
+    vector<vector<ll>> dist(n + 1, vector<ll>(K + 1, INF));
+
+    using State = tuple<ll,int,int>; // (distância, vértice, cupons_usados)
+    priority_queue<State, vector<State>, greater<State>> pq;
+
+    dist[1][0] = 0;              //começa na cidade 1 sem usar cupom
+
+    pq.push({0LL, 1, 0});
+
+    while (!pq.empty()) {
+        auto [d, v, c] = pq.top();
+        
+        pq.pop();
+
+        if (d != dist[v][c]) continue; //estado desatualizado
+
+        for (auto [u, w] : adj[v]) {
+            // 1) Transição sem usar cupom
+            if (dist[u][c] > d + w) {
+                dist[u][c] = d + w;
+                pq.emplace(dist[u][c], u, c);
+            }
+
+            // 2) Transição usando um cupom (se ainda tiver)
+            if (c < K) {
+                ll nw = w / 2; // preço com desconto (floor)
+                if (dist[u][c + 1] > d + nw) {
+                    dist[u][c + 1] = d + nw;
+                    pq.emplace(dist[u][c + 1], u, c + 1);
+                }
+            }
+        }
+    }
+
+    // resposta: menor custo para chegar em n usando 0..K cupons
+    ll ans = INF;
+    for (int c = 0; c <= K; ++c) {
+        ans = min(ans, dist[n][c]);
+    }
+
+    cout << ans << '\n';
+    return 0;
+}
