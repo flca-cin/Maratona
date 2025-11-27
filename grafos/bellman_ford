@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll  = long long;
+using pii = pair<int,int>;
+using vi  = vector<int>;
+
+const ll INF = LLONG_MAX;
+
+int n, m;
+
+// lista de arestas: u -> v com peso w
+struct Edge {
+    int u, v;
+    ll w;
+};
+
+vector<Edge> edges;
+vector<ll> dist;
+
+
+void addEdge(int u, int v, ll w) {
+    edges.push_back({u, v, w});
+    //edges.push_back({v, u, w});
+}
+
+bool bellmanFord(int s) {
+    dist.assign(n + 1, INF);
+    dist[s] = 0;
+
+    for (int rep = 0; rep < n - 1; rep++) {
+        bool mudou = false;
+        for (auto [u, v, w] : edges) {
+            if (dist[u] == INF) continue;
+            if (dist[v] > dist[u] + w) {
+                dist[v] = dist[u] + w;
+                mudou = true;
+            }
+        }
+        // pequena otimização: se nada mudou, pode parar antes
+        if (!mudou) break;
+    }
+
+
+    for (auto [u, v, w] : edges) {
+        if (dist[u] == INF) continue;
+        if (dist[v] > dist[u] + w) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main() {
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    cin >> n >> m;
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        ll w;
+        cin >> u >> v >> w;
+        addEdge(u, v, w);
+    }
+
+    int s = 1; // vértice origem (pode trocar / ler da entrada)
+    bool ok = bellmanFord(s);
+
+    if (!ok) {
+        cout << "Existe ciclo negativo alcançavel a partir de " << s << endl;
+    } else {
+        for (int v = 1; v <= n; v++) {
+            if (dist[v] == INF) cout << "INF ";
+            else cout << dist[v] << ' ';
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
