@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+
+int main(){
+    const int n = 1e5 + 10;
+    vector<ll> dist(n + 1, LLONG_MAX);
+    vector<vector<tuple<ll, ll>>> adj(n + 1);
+    priority_queue<tuple<ll,ll>, vector<tuple<ll,ll>>, greater<tuple<ll,ll>>> pq;
+
+    pq.push({0,1});
+
+    dist[1] = 0;
+
+    while (!pq.empty()) {
+        auto cur = pq.top();
+        ll d = get<0>(cur);
+        ll v = get<1>(cur);
+
+        pq.pop();
+
+        if (d <= dist[v]) {
+            for (auto viz : adj[v]) {
+                ll u = get<0>(viz);
+                ll w = get<1>(viz);
+                if (dist[u] > dist[v] + w) {
+                    dist[u] = dist[v] + w;
+                    pq.push({dist[u], u});
+                }
+            }
+        }
+    }
+    return 0;
+}
+
