@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll  = long long;
+using pii = pair<int,int>;
+using vi  = vector<int>;
+
+const int MAXSZ = 2e5 + 10;
+
+// ---------- DSU (Union-Find) ----------
+vi parent(MAXSZ), sz(MAXSZ);
+
+void dsu_init(int n) {
+    for (int i = 1; i <= n; i++) {
+        parent[i] = i;
+        sz[i] = 1;
+    }
+}
+
+int find(int v) {
+    if (parent[v] == v) return v;
+    return parent[v] = find(parent[v]); // path compression
+}
+
+void join(int a, int b) {
+    a = find(a);
+    b = find(b);
+    if (a == b) return;
+    if (sz[a] < sz[b]) swap(a, b); // union by size
+    parent[b] = a;
+    sz[a] += sz[b];
+}
+
+// ---------- Kruskal ----------
+int main() {
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    int n, m;
+    cin >> n >> m;
+
+    // arestas: (custo, u, v)
+    vector<tuple<ll,int,int>> edges;
+    edges.reserve(m);
+
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        ll w;
+        cin >> u >> v >> w;
+        edges.emplace_back(w, u, v);
+    }
+
+    // ordenar por custo crescente
+    sort(edges.begin(), edges.end());
+
+    dsu_init(n);
+
+    ll totalCost = 0;
+    vector<tuple<int,int,ll>> mst; // se quiser guardar as arestas da MST
+
+    for (auto [cost, u, v] : edges) {
+        if (find(u) != find(v)) {
+            join(u, v);
+            totalCost += cost;
+            mst.push_back({u, v, cost});
+        }
+    }
+
+    cout << totalCost << endl;
+
+    // se quiser imprimir as arestas da MST:
+    /*
+    for (auto [u, v, w] : mst) {
+        cout << u << " " << v << " " << w << endl;
+    }
+    */
+
+    return 0;
+}
