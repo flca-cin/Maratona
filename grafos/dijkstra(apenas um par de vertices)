@@ -2,42 +2,80 @@
 #define endl '\n'
 
 using namespace std;
-using ll = long long;
+using ll  = long long;
 using pii = pair<int,int>;
-using vi = vector<int>;
-
+using vi  = vector<int>;
 
 const int MAXSZ = 1e5 + 10;
-vector<ll> dist(MAXSZ+1, LLONG_MAX);
-vector<vector<tuple<ll, ll>>> adj(MAXSZ + 1);
-priority_queue<tuple<ll,ll>, vector<tuple<ll,ll>>, greater<tuple<ll,ll>>> pq;
+const ll INF = LLONG_MAX;
 
+// dist[v] = menor distância conhecida até v
+vector<ll> dist(MAXSZ + 1, INF);
 
-int main(){
-    
+// adj[v] = lista de (u, w): aresta v -> u com peso w
+vector<vector<pair<int,ll>>> adj(MAXSZ + 1);
 
-    pq.push({0,1});
+// Dijkstra a partir de "source", em um grafo com n vértices (1..n)
+void dijkstra(int source, int n) {
+    // inicializa distâncias
+    for (int i = 1; i <= n; i++) {
+        dist[i] = INF;
+    }
 
-    dist[1] = 0;
+    dist[source] = 0;
+
+    // (distância, vértice)
+    priority_queue<
+        pair<ll,int>,
+        vector<pair<ll,int>>,
+        greater<pair<ll,int>>
+    > pq;
+
+    pq.push({0LL, source});
 
     while (!pq.empty()) {
-        auto cur = pq.top();
-        ll d = get<0>(cur);
-        ll v = get<1>(cur);
-
+        auto [d, v] = pq.top();
         pq.pop();
 
-        if (d <= dist[v]) {
-            for (auto viz : adj[v]) {
-                ll u = get<0>(viz);
-                ll w = get<1>(viz);
-                if (dist[u] > dist[v] + w) {
-                    dist[u] = dist[v] + w;
-                    pq.push({dist[u], u});
-                }
+        // se esse estado está desatualizado, ignora
+        if (d != dist[v]) continue;
+
+        for (auto [u, w] : adj[v]) {
+            if (dist[u] > dist[v] + w) {
+                dist[u] = dist[v] + w;
+                pq.push({dist[u], u});
             }
         }
     }
-    return 0;
 }
 
+int main() {
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    int n, m;
+    cin >> n >> m;
+
+    // lê as arestas
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        ll w;
+        cin >> a >> b >> w;
+        adj[a].push_back({b, w});
+        // se for grafo não-direcionado, descomente:
+        // adj[b].push_back({a, w});
+    }
+
+    int source = 1; // vértice de origem (troque se quiser)
+    dijkstra(source, n);
+
+    // exemplo: imprimir distâncias de 1..n
+    for (int v = 1; v <= n; v++) {
+        if (dist[v] == INF) cout << "-1 ";
+        else cout << dist[v] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
