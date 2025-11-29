@@ -1,36 +1,36 @@
 int n;
-    cin>>n; 
-    vector<pii> intervalos(n+1);
-    vi v;
-    for(int i=0;i<n;i++){
-        int p1,p2;
-        cin>>p1>>p2;
-        intervalos[i].first=p1;
-        intervalos[i].second=p2;
-        v.insert(v.end(),p1);
-        v.insert(v.end(),p2);
-    }
-    sort(v.begin(),v.end());
-    v.erase(unique(v.begin(),v.end()),v.end());
-    vi contador(v.size(), 0);
-    for(auto el : intervalos){
-        int pos1 = lower_bound(v.begin(), v.end(), el.first)-v.begin();
-        int pos2 = lower_bound(v.begin(), v.end(), el.second)-v.begin();
-        contador[pos1]++;
-        contador[pos2]--;
-    }
-    for(int i=0;i<v.size();i++){
-        //cout<<"contador ["<<i<<"] = "<<contador[i]<<endl;
-    }
-    vector<ll> psum(v.size()+1,0);
-    for(int i=1; i<= v.size();i++){
-        psum[i] = psum[i-1]+contador[i-1];
-    }
-    for(int i=0;i<v.size();i++){
-        //cout<<"psum ["<<i<<"] = "<<psum[i]<<endl;
-    }
-    //intervalos que contém x são: psum[upper_bound(v.begin() , v.end(), pos) - v.begin()) -1]
+cin>>n; 
+vector<pii> intervalos(n+1);
+vi v;
+for(int i=0;i<n;i++){
+    int p1,p2;
+    cin>>p1>>p2;
+    intervalos[i].first=p1;
+    intervalos[i].second=p2;
+    v.insert(v.end(),p1);
+    v.insert(v.end(),p2);
+}
+sort(v.begin(),v.end());
+v.erase(unique(v.begin(),v.end()),v.end());
+vi contador(v.size(), 0);
+for(auto el : intervalos){
+    int pos1 = lower_bound(v.begin(), v.end(), el.first)-v.begin();
+    int pos2 = lower_bound(v.begin(), v.end(), el.second)-v.begin();
+    contador[pos1]++;
+    contador[pos2]--;
+}
+for(int i=0;i<v.size();i++){
+    //cout<<"contador ["<<i<<"] = "<<contador[i]<<endl;
+}
+vector<ll> psum(v.size()+1,0);
+for(int i=1; i<= v.size();i++){
+    psum[i] = psum[i-1]+contador[i-1];
+}
+for(int i=0;i<v.size();i++){
+    //cout<<"psum ["<<i<<"] = "<<psum[i]<<endl;
+}
+//intervalos que contém x são: psum[upper_bound(v.begin() , v.end(), pos) - v.begin()) -1]
 
-    for(int i=1;i < 10 ; i++){
-        //cout<<" a qtd de intervalos que "<<i<<" pertence é : "<<psum[(upper_bound(v.begin() , v.end(), i) - v.begin()) -1]<<endl;
-    }
+for(int i=1;i < 10 ; i++){
+    //cout<<" a qtd de intervalos que "<<i<<" pertence é : "<<psum[(upper_bound(v.begin() , v.end(), i) - v.begin()) -1]<<endl;
+}
