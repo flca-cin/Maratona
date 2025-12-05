@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+#define int ll //SE LIGA!!!
+const int xsz = 1e5+5,ysz = 10+5;
+int memo[xsz][ysz];
+
+// ================================================================
+int maior_soma(int i, int x, int tam, vi &a, int k){
+    if(i>=tam) return 0;
+    if(memo[i][x] != -1) return memo[i][x];
+    memo[i][x] = maior_soma(i+1,x, tam, a, k);
+    if(abs(a[i]-x)<=k){
+        int nans = maior_soma(i+1,a[i], tam, a, k)+a[i];
+        memo[i][x] = max(memo[i][x],nans);
+    }
+    return memo[i][x];
+}
+int solve(){    
+    int ms = 0;
+    int tam,k;
+    cin>>tam>>k;
+    vi a(tam+2);
+    for(int i=0;i<tam;i++){
+        cin>>a[i];
+    }
+    for(int i=0;i<tam;i++){
+        if(maior_soma(i+1,a[i],tam,a,k)+a[i]>ms) ms = maior_soma(i+1,a[i],tam,a,k)+a[i];
+    }
+    cout<<ms;
+    return 0;
+}
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    for(int i=0;i<xsz;i++){
+        for(int j=0;j<ysz;j++){
+            memo[i][j]=-1;
+        }
+    }
+
+    int tc; tc=1; for(int i=1;i<=tc;i++){
+        solve();
+    }
+    
+
+    return 0;
+}
