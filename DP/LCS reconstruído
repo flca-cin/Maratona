@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+#define int ll // SE LIGA!!!
+
+string a, b;
+vector<vector<int>> dp;
+
+int solve() {
+    int n, m;
+    cin >> n;
+    cin >> a;
+    cin >> m;
+    cin >> b;
+
+    // Se o tamanho não vier na entrada, você pode usar:
+    // a >> b;
+    // n = a.size();
+    // m = b.size();
+
+    dp.assign(n + 1, vector<int>(m + 1, 0));
+
+    // DP bottom-up para LCS (1-based)
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            if (a[i - 1] == b[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    // Reconstrução da LCS
+    int i = n, j = m;
+    string lcs;
+
+    while (i > 0 && j > 0) {
+        if (a[i - 1] == b[j - 1]) {
+            // esse caractere faz parte da LCS
+            lcs.push_back(a[i - 1]);
+            i--;
+            j--;
+        } else {
+            // anda para o lado que manteve o valor máximo
+            if (dp[i - 1][j] >= dp[i][j - 1]) {
+                i--;
+            } else {
+                j--;
+            }
+        }
+    }
+
+    reverse(lcs.begin(), lcs.end());
+
+    // dp[n][m] é o tamanho da LCS
+    cout << dp[n][m] << endl;
+    cout << lcs << endl; // se quiser só a LCS, tá aqui
+
+    return dp[n][m];
+}
+
+signed main() {
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int tc; 
+    tc = 1;
+    for (int i = 1; i <= tc; i++) {
+        solve();
+    }
+
+    return 0;
+}
