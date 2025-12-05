@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+#define int ll //SE LIGA!!!
+
+vector<vector<int>> dp;
+
+string a;
+string b;
+
+int best(int i, int j) {
+    if (i < 0 || j < 0) return 0;
+    if (dp[i][j] != -1) return dp[i][j];
+
+    dp[i][j] = 0;
+
+    if (a[i] == b[j]) {
+        dp[i][j] = 1 + best(i - 1, j - 1);
+    } else {
+        dp[i][j] = max(best(i - 1, j), best(i, j - 1));
+    }
+
+    return dp[i][j];
+}
+
+int solve() {
+    int n,m;
+    cin>>n;
+    cin>>a;
+    cin>>m;
+    cin>>b;
+    //se ele n der tamanhos: 
+    /*cin>>a>>b;
+    n = a.size();
+    m = b.size();
+    */
+
+    dp = vector<vector<int>>(n, vector<int>(m, -1));
+
+    return best(n - 1, m - 1);
+}
+
+
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+
+    int tc; tc=1; for(int i=1;i<=tc;i++){
+        cout<<solve();
+    }
+    
+
+    return 0;
+}
