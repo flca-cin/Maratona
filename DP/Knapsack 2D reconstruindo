@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+#define int ll //SE LIGA!!!
+
+int solve() {
+    int n, W;
+    cin >> n >> W;
+    
+    vector<int> w(n); // peso
+    vector<int> v(n); // valor
+
+    for (int i = 0; i < n; i++) {
+        cin >> v[i] >> w[i]; // atenção: valor, depois peso
+    }
+
+
+    vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
+
+    for (int i = 0; i < n; i++) {
+        for (int cap = 0; cap <= W; cap++) {
+            dp[i+1][cap] = dp[i][cap]; // não pega o item i
+            if (cap >= w[i]) {
+                if(dp[i+1][cap]<dp[i][cap - w[i]] + v[i]){//<só muda se pegar item MELHORAR, então evita itens
+                    dp[i+1][cap]=dp[i][cap - w[i]] + v[i];
+                }
+            }
+        }
+    }
+    int bestW = 0;
+
+
+    for (int x = 0; x <= W; x++) {
+        if (dp[n][x] >= dp[n][bestW]) bestW = x;//>=,pega a combinação de maior peso,> pega a de menor
+    }
+
+    vector<int> items;
+    int cap = bestW;
+    for (int i = n - 1; i >= 0; i--) {
+        if (cap >= w[i] && dp[i+1][cap] == dp[i][cap - w[i]] + v[i]) {
+            items.push_back(i);
+            cap -= w[i];
+        }
+    }
+    reverse(items.begin(), items.end());
+    cout<<dp[n][bestW]<<endl;
+
+    for (int idx : items) {
+        cout << v[idx] << " "; // ou imprime o índice, ou peso, etc.
+    }
+    cout << endl;
+
+    return dp[n][bestW];
+}
+
+
+
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+
+    int tc; tc=1; for(int i=1;i<=tc;i++){
+        solve();
+    }
+    
+
+    return 0;
+}
