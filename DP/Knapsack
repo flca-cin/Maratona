@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+#define int ll //SE LIGA!!!
+
+int solve() {
+    int n, W;
+    cin>>n>>W;
+    vector<int> w(n);//peso
+    vector<int> v(n);//valor
+
+    for(int i=0;i<n;i++){
+        cin>>v[i]>>w[i];//ATENÇÃO NA ORDEM E ENTRADA DO PROB.
+    }
+
+    vector<int> knapsack(W + 1);
+
+    for (int i = 0; i < n; ++i) {
+        for (int k = W - w[i]; k >= 0; --k) {
+            knapsack[k + w[i]] = max(knapsack[k + w[i]], knapsack[k] + v[i]);
+        }
+    }
+
+    return knapsack[W];
+}
+
+
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+
+    int tc; tc=1; for(int i=1;i<=tc;i++){
+        cout<<solve();
+    }
+    
+
+    return 0;
+}
