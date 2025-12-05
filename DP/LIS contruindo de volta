@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+#define int ll //SE LIGA!!!
+
+int solve() {
+    int n;
+    cin>>n;
+    vi a(n);
+    for(int i=0;i<n;i++){
+        cin>>a[i];
+    }
+
+    int answer = 0;
+    int ind_answer = 0;
+    vector<int> dp(n);
+    vi ref(n);
+    for (int j = 0; j < n; ++j) {
+        ref[j]=-1;
+        dp[j] = 1;
+        for (int i = j - 1; i >= 0; --i) {
+            if (a[i] < a[j]) {
+                if(dp[j]<=dp[i]+1){//se quiser puxar pra os mais anteriores, se quiser os mais pro final, coloque só <
+                    dp[j] = dp[i]+1;
+                    ref[j]=i;
+                }
+            }
+        }
+        if(answer<=dp[j]){//se quiser puxar pra os mais anteriores, se quiser os mais pro final, coloque só <
+            ind_answer=j;
+            answer=dp[j];
+        }
+    }
+    cout<<answer;
+    cout<<endl;
+    int atual = ind_answer;
+    stack<int> pilha;
+    pilha.push(a[atual]);
+    while(ref[atual]!=-1){
+        atual = ref[atual];
+        pilha.push(a[atual]);
+    }
+
+    while(!pilha.empty()){
+        cout<<pilha.top()<<" ";
+        pilha.pop();
+    }
+
+    return answer;
+}
+
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+
+    int tc; tc=1; for(int i=1;i<=tc;i++){
+        solve();
+    }
+    
+
+    return 0;
+}
