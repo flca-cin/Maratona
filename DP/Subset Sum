@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using vi = vector<int>;
+#define int ll //SE LIGA!!!
+
+bool solve() {
+    int t;
+    cin>>t;//alvo
+    int tam;
+    cin>>tam;
+    vector<int> a(tam+1);
+    for(int i=0;i<tam;i++){
+        cin>>a[i];
+    }
+
+    vector<bool> dp(t + 1);
+    dp[0] = true;
+
+    for (int x : a) {
+        for (int i = t - x; i >= 0; --i) {
+            if (dp[i]) {
+                dp[i + x] = true;
+            }
+        }
+    }
+
+    return dp[t];
+}
+
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+
+    int tc; tc=1; for(int i=1;i<=tc;i++){
+        cout<<solve();
+    }
+    
+
+    return 0;
+}
