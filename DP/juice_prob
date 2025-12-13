@@ -1,0 +1,23 @@
+const ll INF = 1e18; // número arbitrariamente grande
+
+void solve(){
+    vector<ll> dp(1<<BITS, INF);
+    dp[0] = 0; // não é necessário nenhum custo para obter o conjunto vazio
+
+    for(int mask = 0; mask < (1<<BITS); mask++){
+        for(char vitamin : juice){
+            ll cost;
+            if(vitamin == 'A') mask |= 1; // liga o primeiro bit
+            else if(vitamin == 'B') mask |= 2; // liga o segundo bit
+            else if(vitamin == 'C') mask |= 4; // liga o terceiro bit
+
+            for(int j = 0; j < (1<<BITS); j++){
+                int x = j | mask; // para cada possible estado, liga os bits do mask.
+                dp[x] = min(dp[x], dp[j] + cost);
+            }
+        }
+    }
+
+    if(dp[7] == INF) cout << -1 << endl;
+    else cout << dp[7] << endl;
+}
