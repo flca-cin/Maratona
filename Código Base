@@ -3,6 +3,7 @@
 
 using namespace std;
 using ll = long long;
+#define int ll
 using pii = pair<int,int>;
 using vi = vector<int>;
 
