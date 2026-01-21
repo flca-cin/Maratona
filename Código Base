@@ -8,7 +8,7 @@ using pii = pair<int,int>;
 using vi = vector<int>;
 
 
-int main(){
+signed main(){
     //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
     cout << setprecision(10) << fixed;
     ios::sync_with_stdio(false); cin.tie(0);
