@@ -1,0 +1,27 @@
+//SUM:
+//Complexidade Temporal: O(N Log N)
+//Complexidade Espacial: O(N)
+
+long long sumDivisors[LIM];
+
+void sieve() {
+    for (int i = 1; i < LIM; i++) {
+        for (int j = i; j < LIM; j += i) {
+            sumDivisors[j] += i;
+        }
+    }
+}
+
+//NUM:
+//Complexidade Temporal: O(N Log N)
+//Complexidade Espacial: O(N)
+
+long long numDivisors[LIM];
+
+void sieve() {
+    for (int i = 1; i < LIM; i++) {
+        for (int j = i; j < LIM; j += i) {
+            numDivisors[j]++;
+        }
+    }
+}
