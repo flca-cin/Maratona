@@ -1,0 +1,18 @@
+vector<int> getdivisors(int n) {
+    vector<int> small, big;
+
+    for (int i = 1; i * i <= n; i++) {
+        if (n % i == 0) {
+            small.push_back(i);
+            if (i != n / i) big.push_back(n / i);
+        }
+    }
+
+    reverse(big.begin(), big.end());
+
+    for (int x : big) {
+        small.push_back(x);
+    }
+
+    return small;
+}
