@@ -1,0 +1,106 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+#define int ll //SE LIGA!!!
+using pii = pair<int,int>;
+using vi = vector<int>;
+
+ll mod_add(ll a,ll b, ll MOD){
+    return (a%MOD + b%MOD) % MOD;
+}
+
+ll mod_sub(ll a,ll b,ll MOD){
+    return (a%MOD - b%MOD + MOD) % MOD;
+}
+
+ll mod_mul(ll a,ll b,ll MOD){
+    return (a%MOD * b%MOD) % MOD;
+}
+
+
+struct Mat
+{
+    int m[4][4];
+};
+
+struct Mat41
+{
+    int m[4][1];
+};
+
+Mat f_pot2[31];
+int base[4][4] ={{1,1,1,0},{1,0,0,0},{0,0,1,1},{0,0,0,1}};
+int id[4][4] = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
+
+
+Mat mul_mat_4(Mat a, Mat b,ll MOD){
+    Mat nova;
+    for(int i=0;i<4;i++){
+        for(int j=0;j<4;j++){
+            nova.m[i][j]=0;
+            for(int c=0;c<4;c++){
+                nova.m[i][j]= mod_add(nova.m[i][j],mod_mul(a.m[i][c],b.m[c][j],MOD),MOD);
+            }
+        }
+    }
+    return nova;
+}
+
+
+
+// ================================================================
+void solve(){
+    int n,MOD;
+    cin>>n>>MOD;
+    for(int i = 0; i < 4; i++){
+        for (int j = 0; j < 4; j++){
+            f_pot2[0].m[i][j] = base[i][j];
+        }
+    }
+    for(int i=1;i<31;i++){
+        f_pot2[i] = mul_mat_4(f_pot2[i-1],f_pot2[i-1],MOD);
+    }
+    if(n==0){
+        cout<<0<<endl;
+    }
+    else if(n==1){
+        cout<<1<<endl;
+    }
+    else{
+        vector<int> bin;
+        while (n > 0) {
+            bin.push_back(n & 1); // pega o último bit
+            n >>= 1;              // divide por 2
+        }
+        Mat atual;
+        for(int i = 0; i < 4; i++){
+            for (int j = 0; j < 4; j++){
+                atual.m[i][j] = id[i][j];
+            }
+        }
+        for(int i=0;i<bin.size();i++){
+            if(bin[i]){
+                atual = mul_mat_4(atual,f_pot2[i],MOD);
+            }
+        }
+        
+        cout<<mod_add(atual.m[0][1],atual.m[0][3],MOD)<<endl;
+    }
+    
+
+}
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    int tc; cin>>tc; for(int i=1;i<=tc;i++){
+        solve();
+    }
+    
+
+    return 0;
+}
