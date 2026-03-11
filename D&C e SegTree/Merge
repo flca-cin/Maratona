@@ -1,0 +1,43 @@
+vi merge (vi &a, vi &b){
+    vi c;
+    int l =0, r=0;
+    while(l<a.size() && r<b.size()){
+        if(a[l]<b[r]){
+            c.push_back(a[l]);
+            l++;
+        }
+        else{
+            c.push_back(b[r]);
+            r++;
+            inversoes += a.size()-l;
+        }
+    }
+    while(l<a.size()){
+        c.push_back(a[l]);
+        l++;
+    }
+    while(r<b.size()){
+        c.push_back(b[r]);
+        r++;
+    }
+    return c;
+}
+
+
+void merge_sort(int l, int r){
+    if(l>=r){
+        return;
+    }
+    int m = (l+r)/2;
+    merge_sort(l,m);
+    merge_sort(m+1,r);
+    vi left(a.begin()+l,a.begin()+m+1);
+
+    vi right(a.begin()+m+1,a.begin()+r+1);
+
+    vi c = merge(left,right);
+
+    for(int i = l; i<r+1;i++){
+        a[i] = c[i-l];
+    }
+}
