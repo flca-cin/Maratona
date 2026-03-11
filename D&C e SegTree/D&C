@@ -14,7 +14,7 @@ vi ans(MAXSZ,-1);
 struct Query{
     int l,r,idx;
 };
-
+//TROCAR MIN PELA FUNÇÃO
 void dnc(int l,int r, vector<Query> queries){
     if(l>r || queries.empty()) return;
 
