@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+
+using namespace std;
+using ll = long long;
+#define int ll
+using pii = pair<int,int>;
+using vi = vector<int>;
+
+const int MAXN = 2e5+5;
+int a[MAXN];
+int ps[MAXN];
+int n;
+
+struct Node{
+    int max_pref, min_pref, soma_total, melhor_soma;
+};
+vector<Node> seg(4*MAXN);
+
+Node join(Node a, Node b){
+    Node c;
+    c.max_pref = (max(a.max_pref,a.soma_total+b.max_pref));
+    c.min_pref = (min(a.min_pref,a.soma_total+b.min_pref));
+    c.soma_total = a.soma_total+b.soma_total;
+    c.melhor_soma = max(max(a.melhor_soma,b.melhor_soma), a.soma_total-a.min_pref + b.max_pref);
+    return c;
+}
+
+void build(int l=0, int r = n-1, int idx = 0){
+    if(l==r){
+        seg[idx] = {max(a[l],(ll)0), min(a[l],(ll)0), a[l] , max(a[l],(ll)0)};
+        return;
+    }
+    int mid = (l+r)/2;
+    build(l,mid, 2*idx+1);
+    build(mid+1, r , 2*idx +2);
+    seg[idx] =  join(seg[2*idx+1],seg[2*idx+2]);   
+}
+
+Node query(int L, int R, int l=0, int r= n-1, int idx=0){
+    if(R<l || L>r) return {0,0,0,0};
+    if(L<=l && r<= R) return seg[idx];
+    int mid = (l+r)/2;
+    return join(query(L,R,l,mid,2*idx+1), query(L,R,mid+1,r,2*idx+2));
+}
+
+signed main(){
+    //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+    cout << setprecision(10) << fixed;
+    ios::sync_with_stdio(false); cin.tie(0);
+    cin>>n;
+    int q;cin>>q;
+    for(int i=0;i<n;i++){
+        cin>>a[i];
+    }
+    build();
+    for(int i=0;i<q;i++){
+        int x,y;cin>>x>>y;
+        cout<<query(x-1,y-1,0,n-1,0).melhor_soma<<endl;
+    }
+
+    return 0;
+}
