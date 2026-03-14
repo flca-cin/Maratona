@@ -1,0 +1,25 @@
+const int MAXN = 2e5 + 5;
+
+long long bit[MAXN];
+int n;
+
+void update(int i, long long val){
+    while(i <= n){
+        bit[i] += val;
+        i += i & -i;
+    }
+}
+
+long long query(int i){
+    long long s = 0;
+
+    while(i > 0){
+        s += bit[i];
+        i -= i & -i;
+    }
+    return s;
+}
+
+for(int i = 1; i <= n; i++){
+    update(i, v[i]);
+}
