@@ -7,28 +7,28 @@ using ll = long long;
 using pii = pair<int,int>;
 using vi = vector<int>;
 
+const ll INF = 2e10;
 const int MAXN = 2e5+5;
 int a[MAXN];
 int ps[MAXN];
 int n;
 
 struct Node{
-    int max_pref, min_pref, soma_total, melhor_soma;
+    int min_esq, min_dir, size;
 };
 vector<Node> seg(4*MAXN);
 
 Node join(Node a, Node b){
     Node c;
-    c.max_pref = (max(a.max_pref,a.soma_total+b.max_pref));
-    c.min_pref = (min(a.min_pref,a.soma_total+b.min_pref));
-    c.soma_total = a.soma_total+b.soma_total;
-    c.melhor_soma = max(max(a.melhor_soma,b.melhor_soma), a.soma_total-a.min_pref + b.max_pref);
+    c.min_dir = (min(a.min_dir+b.size,b.min_dir));
+    c.min_esq = (min(a.min_esq,a.size+b.min_esq));
+    c.size = a.size+b.size;
     return c;
 }
 
 void build(int l=0, int r = n-1, int idx = 0){
     if(l==r){
-        seg[idx] = {max(a[l],(ll)0), min(a[l],(ll)0), a[l] , max(a[l],(ll)0)};
+        seg[idx] = {a[l],  a[l], 1};
         return;
     }
     int mid = (l+r)/2;
@@ -37,8 +37,19 @@ void build(int l=0, int r = n-1, int idx = 0){
     seg[idx] =  join(seg[2*idx+1],seg[2*idx+2]);   
 }
 
+void update(int i, ll val, int l=0, int r= n-1, int idx = 0){
+    if(l==r){
+        seg[idx] = {val, val, 1};
+        return;
+    }
+    int mid = (l+r)/2;
+    if(i<=mid) update(i,val,l,mid,2*idx+1);
+    else update(i,val,mid+1, r , 2*idx+2);
+    seg[idx] = join(seg[2*idx+1],seg[2*idx+2]);
+}
+
 Node query(int L, int R, int l=0, int r= n-1, int idx=0){
-    if(R<l || L>r) return {0,0,0,0};
+    if(R<l || L>r) return {INF,INF,0};
     if(L<=l && r<= R) return seg[idx];
     int mid = (l+r)/2;
     return join(query(L,R,l,mid,2*idx+1), query(L,R,mid+1,r,2*idx+2));
@@ -54,9 +65,20 @@ signed main(){
         cin>>a[i];
     }
     build();
+    //cout<<query(0,n-1,0,n-1,0).min_dir<<" "<<query(0,n-1,0,n-1,0).min_esq<<" "<<query(0,n-1,0,n-1,0).size<<endl;
+    //cout<<query(0,1,0,n-1,0).min_dir<<" "<<query(1,n-1,0,n-1,0).min_esq<<" "<<query(0,n-1,0,n-1,0).size<<endl;
     for(int i=0;i<q;i++){
-        int x,y;cin>>x>>y;
-        cout<<query(x-1,y-1,0,n-1,0).melhor_soma<<endl;
+        int x; cin>>x;
+        if(x==1){
+            int p,q;
+            cin>>p>>q;
+            update(p-1, q ,0, n-1 ,0);
+        }
+        if(x==2){
+            int g;cin>>g;
+            g--;
+            cout<<min(query(0,g,0,n-1,0).min_dir,query(g,n-1,0,n-1,0).min_esq)<<endl;
+        }
     }
 
     return 0;
