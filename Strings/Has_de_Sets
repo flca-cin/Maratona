@@ -70,7 +70,7 @@ void solve(){
 
 
     //multiset, ntj, vamos somar, mas é muito random, tem muita chance de dar bom!
-    for(int i = 1; i <= n; i++){
+    for(int i = 1; i <= n; i++){//olha o indice!!
         prefixhash[i] = prefixhash[i-1] + valor[input[i]];
     }
 
