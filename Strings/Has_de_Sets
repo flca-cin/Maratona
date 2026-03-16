@@ -17,16 +17,56 @@ void solve(){
     input.resize(n);
     for(int i = 0; i < n; i++)
         cin >> input[i];
-    //nem sempre precisa guardar os inputs
+    //nem sempre precisa guardar os inputs!!!
     for(auto num : input){
         if(!valor.count(num)){
             valor[num] = uniform(1, 1e18);
         }
     }
 
+
+    //hash xor do set, mas cancela na paridade 
     long long hsh = 0;
     for(int i = 0; i < n; i++){
         hsh ^= valor[input[i]];
     }
+    
 
+    //aqui, tento ver se setA[1,x] == setB[1,y];
+    map<long long, long long> valorB = valorA;
+    
+    for(int i = 1; i <= n; i++){
+        prefxorA[i] = prefxorA[i-1] ^ valorA[a[i-1]];
+        valorA[a[i-1]] = 0; //zerando pra não cancelar
+        prefxorB[i] = prefxorB[i-1] ^ valorB[b[i-1]];
+        valorB[b[i-1]] = 0;
+    }
+    
+    while(q--){
+        cin >> x >> y;
+        if(prefxorA[x] == prefxorB[y]){
+            cout << "Yes" << endl;
+        } else{
+            cout << "No" << endl;
+        }
+    }
+
+    //Aqui, eu quero ver o set, mas pesquisar de [l,r]
+    //Fazer offline, juntando todas as querys que terminam em r==i, pq eu faço no prefixo atualizando pra contar só o ultimo.
+    for(int i = 1; i <= n; i++){
+    hash = valor[input[i]];
+    if(visto.count(hash)){
+        hashed[visto[hash]] ^= hash;
+    }
+    visto[hash] = i;
+    hashed[i] = hash;
+
+    //queries com r=i
+    for(auto q : queries[i]){
+        ans[q.index] = xorsum(q.l, i);
+        //somatorio xor do vetor hashed
+        //pode usar uma bit ou seg
+        //fazendo em logn
+    }
+}
 }
