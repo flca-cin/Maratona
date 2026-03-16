@@ -1,0 +1,32 @@
+mt19937 rng((int) chrono::steady_clock::now().time_since_epoch().count());
+
+// função para gerar número aleatório
+long long uniform(long long l, long long r){
+    uniform_int_distribution<long long> uid(l, r);
+    return uid(rng);
+}
+
+map<long long,long long> valor; // hash aleatório de cada valor
+
+void solve(){
+
+    vector<long long> input;
+    int n;
+    cin >> n;
+
+    input.resize(n);
+    for(int i = 0; i < n; i++)
+        cin >> input[i];
+    //nem sempre precisa guardar os inputs
+    for(auto num : input){
+        if(!valor.count(num)){
+            valor[num] = uniform(1, 1e18);
+        }
+    }
+
+    long long hsh = 0;
+    for(int i = 0; i < n; i++){
+        hsh ^= valor[input[i]];
+    }
+
+}
