@@ -54,19 +54,30 @@ void solve(){
     //Aqui, eu quero ver o set, mas pesquisar de [l,r]
     //Fazer offline, juntando todas as querys que terminam em r==i, pq eu faço no prefixo atualizando pra contar só o ultimo.
     for(int i = 1; i <= n; i++){
-    hash = valor[input[i]];
-    if(visto.count(hash)){
-        hashed[visto[hash]] ^= hash;
-    }
-    visto[hash] = i;
-    hashed[i] = hash;
+        hash = valor[input[i]];
+        if(visto.count(hash)){
+            hashed[visto[hash]] ^= hash;
+        }
+        visto[hash] = i;
+        hashed[i] = hash;
 
-    //queries com r=i
-    for(auto q : queries[i]){
-        ans[q.index] = xorsum(q.l, i);
-        //somatorio xor do vetor hashed
-        //pode usar uma bit ou seg
-        //fazendo em logn
+        //queries com r=i
+        for(auto q : queries[i]){
+            ans[q.index] = xorsum(q.l, i);
+            //somatorio xor do vetor hashed
+            //pode usar uma bit ou seg
+            //fazendo em logn
+        }
     }
-}
+
+
+    //multiset, ntj, vamos somar, mas é muito random, tem muita chance de dar bom!
+    for(int i = 1; i <= n; i++){
+        prefixhash[i] = prefixhash[i-1] + valor[input[i]];
+    }
+
+    for(int i = 0; i < q; i++){
+        cin >> l >> r;
+        cout << prefixhash[r] - prefixhash[l-1] << endl;
+    }
 }
