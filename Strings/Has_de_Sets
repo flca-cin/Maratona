@@ -14,7 +14,7 @@ void solve(){
     int n;
     cin >> n;
 
-    input.resize(n);
+    input.resize(n);//olha o input aqui
     for(int i = 0; i < n; i++)
         cin >> input[i];
     //nem sempre precisa guardar os inputs!!!
@@ -28,7 +28,7 @@ void solve(){
     //hash xor do set, mas cancela na paridade 
     long long hsh = 0;
     for(int i = 0; i < n; i++){
-        hsh ^= valor[input[i]];
+        hsh ^= valor[input[i]];//olha o input aqui
     }
     
 
