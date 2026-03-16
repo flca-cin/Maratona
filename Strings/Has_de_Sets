@@ -15,10 +15,8 @@ void solve(){
     cin >> n;
 
     input.resize(n);//olha o input aqui
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < n; i++){
         cin >> input[i];
-    //nem sempre precisa guardar os inputs!!!
-    for(auto num : input){
         if(!valor.count(num)){
             valor[num] = uniform(1, 1e18);
         }
