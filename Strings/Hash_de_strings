@@ -1,3 +1,5 @@
+
+int n;
 static const ll P1 = 31;
 static const ll P2 = 37;
 static const ll M1 = 1e9 + 33;
@@ -7,7 +9,7 @@ const ll MAXN = 2e5+10;
 vector<ll> powers1, powers2;
 vector<int>  prefix_hash1 , prefix_hash2;
 
-Hasher(const vector<ll>& s) {
+void Hasher(const string& s) {
     n = s.size();
     prefix_hash1.assign(n+1,0); prefix_hash2.assign(n+1,0);
     powers1.assign(n + 1, 1);
@@ -18,13 +20,13 @@ Hasher(const vector<ll>& s) {
         powers2[i] = (powers2[i-1] * P2) % M2;
     }
     for (int i = 0; i < n; i++) {
-        ll val = s[i];
+        ll val = s[i]-'0';
         prefix_hash1[i + 1] = (prefix_hash1[i] * P1 + val) % M1;
         prefix_hash2[i + 1] = (prefix_hash2[i] * P2 + val) % M2;
     }
 }
 
-Hash substr_hash(int i, int j) {
+pair<ll,ll> substr_hash(int i, int j) {
     int len = j - i + 1;
 
     ll h1 =
