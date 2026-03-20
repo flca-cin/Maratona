@@ -1,8 +1,10 @@
+//NAO USAR INT LL!!!
+//SE FOR ESPARÇO E MEDO DE MLE, TROCAR PELOS COMENTS
 struct trie {
     struct node {
         int pref = 0;
         int end = 0;
-        array<int, 26> child = {};
+        array<int, 26> child = {};//unordered_map<char, int> child;
     };
 
     vector<node> tree;
@@ -18,6 +20,14 @@ struct trie {
                 s.pop_back();
             }
         }
+
+        /*for (auto &[c, nxt] : tree[i].child) { // ALTERAÇÃO
+                s.push_back(c);
+                dfs(nxt, s, r);
+                s.pop_back();
+            }
+        */
+        
     }
 
     trie() {
@@ -31,12 +41,12 @@ struct trie {
         for (char c : s) {
             int j = c - 'a';
 
-            if (tree[i].child[j] == 0) {
-                tree[i].child[j] = tree.size();
+            if (tree[i].child[j] == 0) {//if (!tree[i].child.count(c)) {
+                tree[i].child[j] = tree.size();//tree[i].child[c] = tree.size(); // ALTERAÇÃO
                 tree.emplace_back();
             }
 
-            i = tree[i].child[j];
+            i = tree[i].child[j];//i = tree[i].child[c];
             tree[i].pref++;
         }
 
@@ -49,10 +59,10 @@ struct trie {
         // verifica se existe
         for (char c : s) {
             int j = c - 'a';
-            if (tree[i].child[j] == 0) {
+            if (tree[i].child[j] == 0) {//if (!tree[i].child.count(c)) {
                 return;
             }
-            i = tree[i].child[j];
+            i = tree[i].child[j];//i = tree[i].child[c];
         }
 
         if (tree[i].end == 0) return;
@@ -63,11 +73,11 @@ struct trie {
         for (char c : s) {
             int j = c - 'a';
 
-            i = tree[p].child[j];
+            i = tree[p].child[j];//i = tree[p].child[c];
             tree[i].pref--;
 
             if (tree[i].pref == 0) {
-                tree[p].child[j] = 0;
+                tree[p].child[j] = 0;//tree[p].child.erase(c);
                 return;
             }
 
@@ -82,10 +92,10 @@ struct trie {
 
         for (char c : s) {
             int j = c - 'a';
-            if (tree[i].child[j] == 0) {
+            if (tree[i].child[j] == 0) {// if (!tree[i].child.count(c)) {
                 return false;
             }
-            i = tree[i].child[j];
+            i = tree[i].child[j];//i = tree[i].child[c];
         }
 
         return tree[i].end != 0;
