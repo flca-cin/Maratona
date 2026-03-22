@@ -44,7 +44,7 @@ bool OnSegment(const Point &p1, const Point &p2, const Point &p3){
     if(cmp(cross(p2-p1,p3-p1),0)!=0) return false;
     return true;
 }
-
+//CUIDADO COM O CASO COLINEARES!!!
 vector<Point> convexhull(vector<Point>& pts, bool sorted = false){ // pts.size() >= 3
     int n = pts.size();
     if(!sorted){
