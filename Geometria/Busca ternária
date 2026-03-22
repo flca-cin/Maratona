@@ -1,1 +1,50 @@
+//EX discreto: faça até um intervalo bem pequeno, pra não dar bonca com os mod3.
+l=1;r = n;
+    while(r-l>5){
+        int m1=(r-l)/3+l;
+        int m2 = r - (r-l)/3;
+        if(f(A[m1],B)>f(A[m2],B)){
+            l = m1;
+        }
+        else{
+            r = m2;
+        }
+    }
+    int minimizador = l;
+    double dist_min =f(A[l],B);
+    for(int i=l+1;i<=r;i++){
+        if(f(A[i],B)<dist_min){
+            dist_min = f(A[i],B);
+            minimizador = i;
+        }
+    }
+//EX contínuo: faça até x iterações, ou até (r-l) ficar mt pequeno.
+double f(double l, double r,double y, const vector<Point> &pts){
+  for(int i=0;i<2.2e2;i++){
+        double m1 = (r-l)/3+l;
+        double m2 = r-(r-l)/3;
+        if(max_dist(m1,y,pts)<max_dist(m2,y,pts)){
+            r = m2;
+        }
+        else{
+            l = m1;
+        }
+    }
+    return max_dist((l+r)/2,y,pts);
+}
 
+
+//se houver mais de uma dimensão e você achar que (dist pro melhor y) é convexo/concado pra cada x:
+//então vc faz a busca no x, pequisando pelo melhor y de cada um. 
+
+double r = -1e3-2, l = -r;
+  for(int i=0;i<3.20e2;i++){
+      double m1 = (r-l)/3+l;
+      double m2 = r-(r-l)/3;
+      if(f(-1e3-2,1e3+2,m1,pts)<f(-1e3-2,1e3+2,m2,pts)){
+          r = m2;
+      }
+      else{
+          l = m1;
+      }
+  }
