@@ -1,3 +1,9 @@
+using namespace std;
+using ll = long long;
+#define int ll
+using pii = pair<int,int>;
+using vi = vector<int>;
+
 
 const double EPS = 1e-9;
 
@@ -33,6 +39,12 @@ Point normalize(const Point &p) { return p/hypot(p.x, p.y); }
 double angle (const Point& p, Point& q) { return atan2(cross(p, q), dot(p, q)); }
 double angle (const Point& p) { return atan2(p.y, p.x); }
 
+
+bool OnSegment(const Point &p1, const Point &p2, const Point &p3){
+    if(cmp(cross(p2-p1,p3-p1),0)!=0) return false;
+    return true;
+}
+
 vector<Point> convexhull(vector<Point>& pts, bool sorted = false){ // pts.size() >= 3
     int n = pts.size();
     if(!sorted){
@@ -47,7 +59,7 @@ vector<Point> convexhull(vector<Point>& pts, bool sorted = false){ // pts.size()
         while(s >= 3){
             Point a = lower[s-3], b = lower[s-2], c = lower[s-1];
             Point v1 = b - a, v2 = c - b;
-            if(cross(v1, v2) > 0){
+            if(cross(v1, v2) >= 0){//>= se quero borda
                 break;
             }
             lower[s-2] = lower[s-1];
@@ -62,7 +74,7 @@ vector<Point> convexhull(vector<Point>& pts, bool sorted = false){ // pts.size()
         while(s >= 3){
             Point a = upper[s-3], b = upper[s-2], c = upper[s-1];
             Point v1 = b - a, v2 = c - b;
-            if(cross(v1, v2) < 0){
+            if(cross(v1, v2) <= 0){//<= se quero borda
                 break;
             }
             upper[s-2] = upper[s-1];
