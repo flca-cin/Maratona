@@ -1,6 +1,6 @@
 int n;
 cin>>n; 
-vector<pii> intervalos(n+1);
+vector<pii> intervalos(n);//os intervalos contam [l,r)
 vi v;
 for(int i=0;i<n;i++){
     int p1,p2;
@@ -29,8 +29,31 @@ for(int i=1; i<= v.size();i++){
 for(int i=0;i<v.size();i++){
     //cout<<"psum ["<<i<<"] = "<<psum[i]<<endl;
 }
-//intervalos que contém x são: psum[upper_bound(v.begin() , v.end(), pos) - v.begin()) -1]
+//intervalos que contém x são: psum[upper_bound(v.begin() , v.end(), x) - v.begin()]
 
 for(int i=1;i < 10 ; i++){
-    //cout<<" a qtd de intervalos que "<<i<<" pertence é : "<<psum[(upper_bound(v.begin() , v.end(), i) - v.begin()) -1]<<endl;
+    //cout<<" a qtd de intervalos que "<<i<<" pertence é : "<<psum[upper_bound(v.begin() , v.end(), i) - v.begin()]<<endl;
 }
+//aqui, completei pra o caso de querer saber por quanto tempo terá até k funcionarios on:
+vi contagens(n+1,0);
+vector<int>::iterator it = lower_bound(v.begin(),v.end(),s);
+vector<int>::iterator it2 = lower_bound(v.begin(),v.end(),f);
+vector<int>::iterator it3;
+while(it<it2){
+    it3 = upper_bound(v.begin(),v.end(),*it);
+    if(it3!=v.end()){
+        contagens[psum[it-v.begin()+1]]+=(*it3-*it);
+        
+    }
+    it = it3;
+    
+}
+vi prec(contagens.size()+1,0);
+for(int i=0;i<contagens.size();i++){
+    prec[i+1] = prec[i]+contagens[i];
+}
+for(int i=1;i<prec.size()-1;i++){
+    cout<<prec[i]<<" ";
+}
+
+
