@@ -1,0 +1,13 @@
+bool vem_antes(int a, int b){
+    return a > b;
+}
+
+priority_queue<int, vector<int>, bool(*)(int,int)> pq(vem_antes);
+
+vector<int> v = {4, 2, 2, 5, 4, 1, 1};
+
+sort(v.begin(), v.end());
+v.erase(unique(v.begin(), v.end()), v.end());
+
+
+reverse(v.begin(), v.end());
