@@ -39,3 +39,21 @@ struct line_container : multiset<line, less<>> {
         return l->a * x + l->b;
     }
 };
+
+signed main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    line_container cht;//    cuidado ao pesquisar max, verficiar se cht.empty()
+
+    // adiciona retas y = ax + b
+    cht.insert(2, 3);    // y = 2x + 3
+    cht.insert(-1, 10);  // y = -x + 10
+    cht.insert(5, -7);   // y = 5x - 7
+
+    cout << cht.max(0) << endl;  // max(3, 10, -7) = 10
+    cout << cht.max(2) << endl;  // max(7, 8, 3) = 8
+    cout << cht.max(5) << endl;  // max(13, 5, 18) = 18
+
+    return 0;
+}
