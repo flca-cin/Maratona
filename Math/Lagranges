@@ -1,0 +1,275 @@
+//Lagrange MOD
+
+//Lagrange Geral:
+struct LagrangeGeneralMod {
+    int n;
+    vector<ll> x, y, w;
+
+    // w[i] = 1 / prod_{j != i} (x[i] - x[j])
+    LagrangeGeneralMod(const vector<ll>& _x, const vector<ll>& _y) {
+        x = _x;
+        y = _y;
+        n = x.size();
+
+        w.assign(n, 1);
+
+        for (int i = 0; i < n; i++) {
+            x[i] = norm(x[i]);
+            y[i] = norm(y[i]);
+        }
+
+        for (int i = 0; i < n; i++) {
+            ll den = 1;
+
+            for (int j = 0; j < n; j++) {
+                if (i == j) continue;
+                den = mod_mul(den, mod_sub(x[i], x[j]));
+            }
+
+            w[i] = inv_mod(den);
+        }
+    }
+
+    ll eval(ll X) {
+        X = norm(X);
+
+        for (int i = 0; i < n; i++) {
+            if (X == x[i]) return y[i];
+        }
+
+        ll total_prod = 1;
+
+        for (int i = 0; i < n; i++) {
+            total_prod = mod_mul(total_prod, mod_sub(X, x[i]));
+        }
+
+        ll ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            ll term = y[i];
+            term = mod_mul(term, w[i]);
+            term = mod_mul(term, total_prod);
+            term = mod_mul(term, inv_mod(mod_sub(X, x[i])));
+
+            ans = mod_add(ans, term);
+        }
+
+        return ans;
+    }
+};
+
+int main() {
+    vector<ll> x = {0, 1, 2};
+    vector<ll> y = {1, 3, 7};
+
+    LagrangeGeneralMod lag(x, y);
+    cout << lag.eval(3) << '\n'; // 13
+}
+
+
+//Lagrange PA(aqui, considerando a partir de p(0)):
+
+struct LagrangeConsecutiveMod {
+    int n;
+    vector<ll> y;
+    vector<ll> fat, invfat;
+
+    LagrangeConsecutiveMod(const vector<ll>& _y) {
+        y = _y;
+        n = y.size();
+
+        for (ll &v : y) v = norm(v);
+
+        fat.assign(n, 1);
+        invfat.assign(n, 1);
+
+        for (int i = 1; i < n; i++) {
+            fat[i] = mod_mul(fat[i - 1], i);
+        }
+
+        invfat[n - 1] = inv_mod(fat[n - 1]);
+
+        for (int i = n - 2; i >= 0; i--) {
+            invfat[i] = mod_mul(invfat[i + 1], i + 1);
+        }
+    }
+
+    ll eval(ll X) {
+        if (0 <= X && X < n) {
+            return y[(int)X];
+        }
+
+        ll xm = norm(X);
+
+        vector<ll> pref(n), suf(n);
+
+        pref[0] = mod_sub(xm, 0);
+        for (int i = 1; i < n; i++) {
+            pref[i] = mod_mul(pref[i - 1], mod_sub(xm, i));
+        }
+
+        suf[n - 1] = mod_sub(xm, n - 1);
+        for (int i = n - 2; i >= 0; i--) {
+            suf[i] = mod_mul(suf[i + 1], mod_sub(xm, i));
+        }
+
+        ll ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            ll num = 1;
+
+            if (i > 0) {
+                num = mod_mul(num, pref[i - 1]);
+            }
+
+            if (i + 1 < n) {
+                num = mod_mul(num, suf[i + 1]);
+            }
+
+            ll den_inv = mod_mul(invfat[i], invfat[n - 1 - i]);
+
+            if ((n - 1 - i) & 1) {
+                den_inv = MOD - den_inv;
+            }
+
+            ll term = mod_mul(y[i], num);
+            term = mod_mul(term, den_inv);
+
+            ans = mod_add(ans, term);
+        }
+
+        return ans;
+    }
+};
+
+int main() {
+    // f(0)=1, f(1)=3, f(2)=7
+    vector<ll> y = {1, 3, 7};
+
+    LagrangeConsecutiveMod lag(y);
+
+    cout << lag.eval(3) << '\n'; // 13
+}
+
+// Lagrange Geral ld:
+using ld = long double;
+
+struct LagrangeGeneralReal {
+    int n;
+    vector<ld> x, y, w;
+
+    // w[i] = 1 / prod_{j != i} (x[i] - x[j])
+    LagrangeGeneralReal(const vector<ld>& _x, const vector<ld>& _y) {
+        x = _x;
+        y = _y;
+        n = x.size();
+
+        w.assign(n, 1);
+
+        for (int i = 0; i < n; i++) {
+            ld den = 1;
+
+            for (int j = 0; j < n; j++) {
+                if (i == j) continue;
+                den *= x[i] - x[j];
+            }
+
+            w[i] = 1.0L / den;
+        }
+    }
+
+    ld eval(ld X) {
+        const ld EPS = 1e-18L;
+
+        for (int i = 0; i < n; i++) {
+            if (fabsl(X - x[i]) < EPS) {
+                return y[i];
+            }
+        }
+
+        ld total_prod = 1;
+
+        for (int i = 0; i < n; i++) {
+            total_prod *= X - x[i];
+        }
+
+        ld ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            ans += y[i] * w[i] * total_prod / (X - x[i]);
+        }
+
+        return ans;
+    }
+};
+
+//Lagrange PA:
+#include <bits/stdc++.h>
+using namespace std;
+
+using ld = long double;
+
+struct LagrangeConsecutiveReal {
+    int n;
+    vector<ld> y;
+    vector<ld> fat;
+
+    LagrangeConsecutiveReal(const vector<ld>& _y) {
+        y = _y;
+        n = y.size();
+
+        fat.assign(n, 1);
+
+        for (int i = 1; i < n; i++) {
+            fat[i] = fat[i - 1] * i;
+        }
+    }
+
+    ld eval(ld X) {
+        const ld EPS = 1e-18L;
+
+        for (int i = 0; i < n; i++) {
+            if (fabsl(X - i) < EPS) {
+                return y[i];
+            }
+        }
+
+        vector<ld> pref(n), suf(n);
+
+        pref[0] = X;
+
+        for (int i = 1; i < n; i++) {
+            pref[i] = pref[i - 1] * (X - i);
+        }
+
+        suf[n - 1] = X - (n - 1);
+
+        for (int i = n - 2; i >= 0; i--) {
+            suf[i] = suf[i + 1] * (X - i);
+        }
+
+        ld ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            ld num = 1;
+
+            if (i > 0) {
+                num *= pref[i - 1];
+            }
+
+            if (i + 1 < n) {
+                num *= suf[i + 1];
+            }
+
+            ld den = fat[i] * fat[n - 1 - i];
+
+            if ((n - 1 - i) & 1) {
+                den = -den;
+            }
+
+            ans += y[i] * num / den;
+        }
+
+        return ans;
+    }
+};
