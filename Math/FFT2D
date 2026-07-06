@@ -1,0 +1,206 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+#define ld double
+
+typedef complex<ld> CD;
+
+int next_pow2(int x) {
+    int n = 1;
+    while (n < x) n <<= 1;
+    return n;
+}
+
+void fft(vector<CD>& a) {
+    int n = a.size(), L = 31 - __builtin_clz(n);
+
+    static vector<complex<long double>> R(2, 1);
+    static vector<CD> rt(2, 1);
+
+    for (static int k = 2; k < n; k *= 2) {
+        auto x = polar(1.0L, acos(-1.0L) / k);
+        R.resize(n);
+        rt.resize(n);
+
+        for (int i = k; i < 2 * k; i++) {
+            rt[i] = R[i] = (i & 1) ? R[i / 2] * x : R[i / 2];
+        }
+    }
+
+    vector<int> rev(n);
+
+    for (int i = 0; i < n; i++) {
+        rev[i] = (rev[i / 2] | (i & 1) << L) / 2;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (i < rev[i]) swap(a[i], a[rev[i]]);
+    }
+
+    for (int k = 1; k < n; k *= 2) {
+        for (int i = 0; i < n; i += 2 * k) {
+            for (int j = 0; j < k; j++) {
+                auto x = (ld*)&rt[j + k];
+                auto y = (ld*)&a[i + j + k];
+
+                CD z(
+                    x[0] * y[0] - x[1] * y[1],
+                    x[0] * y[1] + x[1] * y[0]
+                );
+
+                a[i + j + k] = a[i + j] - z;
+                a[i + j] += z;
+            }
+        }
+    }
+}
+
+void ifft(vector<CD>& a) {
+    int n = a.size();
+
+    for (auto &x : a) x = conj(x);
+
+    fft(a);
+
+    for (auto &x : a) x = conj(x) / (ld)n;
+}
+
+void fft2d(vector<vector<CD>>& a) {
+    int n = a.size();
+    int m = a[0].size();
+
+    for (int i = 0; i < n; i++) {
+        fft(a[i]);
+    }
+
+    vector<CD> col(n);
+
+    for (int j = 0; j < m; j++) {
+        for (int i = 0; i < n; i++) {
+            col[i] = a[i][j];
+        }
+
+        fft(col);
+
+        for (int i = 0; i < n; i++) {
+            a[i][j] = col[i];
+        }
+    }
+}
+
+void ifft2d(vector<vector<CD>>& a) {
+    int n = a.size();
+    int m = a[0].size();
+
+    for (int i = 0; i < n; i++) {
+        ifft(a[i]);
+    }
+
+    vector<CD> col(n);
+
+    for (int j = 0; j < m; j++) {
+        for (int i = 0; i < n; i++) {
+            col[i] = a[i][j];
+        }
+
+        ifft(col);
+
+        for (int i = 0; i < n; i++) {
+            a[i][j] = col[i];
+        }
+    }
+}
+
+vector<vector<ld>> conv2d_fft(
+    const vector<vector<ld>>& A,
+    const vector<vector<ld>>& B
+) {
+    if (A.empty() || B.empty()) return {};
+    if (A[0].empty() || B[0].empty()) return {};
+
+    int n = A.size();
+    int m = A[0].size();
+
+    int p = B.size();
+    int q = B[0].size();
+
+    int H = next_pow2(n + p - 1);
+    int W = next_pow2(m + q - 1);
+
+    vector<vector<CD>> FA(H, vector<CD>(W));
+    vector<vector<CD>> FB(H, vector<CD>(W));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            FA[i][j] = A[i][j];
+        }
+    }
+
+    for (int i = 0; i < p; i++) {
+        for (int j = 0; j < q; j++) {
+            FB[i][j] = B[i][j];
+        }
+    }
+
+    fft2d(FA);
+    fft2d(FB);
+
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+            FA[i][j] *= FB[i][j];
+        }
+    }
+
+    ifft2d(FA);
+
+    vector<vector<ld>> ans(n + p - 1, vector<ld>(m + q - 1));
+
+    for (int i = 0; i < n + p - 1; i++) {
+        for (int j = 0; j < m + q - 1; j++) {
+            ans[i][j] = FA[i][j].real();
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<ld>> A(n, vector<ld>(m));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> A[i][j];
+        }
+    }
+
+    int p, q;
+    cin >> p >> q;
+
+    vector<vector<ld>> B(p, vector<ld>(q));
+
+    for (int i = 0; i < p; i++) {
+        for (int j = 0; j < q; j++) {
+            cin >> B[i][j];
+        }
+    }
+
+    auto C = conv2d_fft(A, B);
+
+    cout << C.size() << ' ' << C[0].size() << '\n';
+
+    for (int i = 0; i < (int)C.size(); i++) {
+        for (int j = 0; j < (int)C[i].size(); j++) {
+            cout << llround(C[i][j]) << ' ';
+        }
+        cout << '\n';
+    }
+
+    return 0;
+}
